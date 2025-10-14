@@ -1,0 +1,138 @@
+# 中国 PII 识别器配置
+#
+# 本文件定义中国特定的 PII 识别器配置
+# 包括：身份证、手机号、银行卡、护照等
+
+recognizers:
+  # 中国身份证号识别器
+  - name: ChinaIDCardRecognizer
+    entity_type: CHINA_ID_CARD
+    confidence_base: 0.85
+    patterns:
+      # 18 位身份证号格式
+      # 格式：6位地区码 + 8位生日 + 3位顺序码 + 1位校验码
+      - pattern: '[1-9]\d{5}(19|20)\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])\d{3}[0-9Xx]'
+        score: 0.90
+        description: "标准18位身份证号"
+
+    context_words:
+      - '身份证'
+      - '身份证号'
+      - '身份证号码'
+      - 'ID'
+      - 'ID卡'
+      - '证件号'
+      - '证件号码'
+      - '居民身份证'
+
+    deny_lists:
+      - '订单号'
+      - '流水号'
+      - '编号'
+      - '序列号'
+      - '商品编号'
+
+    validation:
+      type: 'checksum'
+      algorithm: 'china_id_card'
+
+  # 中国手机号识别器
+  - name: ChinaPhoneRecognizer
+    entity_type: CHINA_PHONE
+    confidence_base: 0.80
+    patterns:
+      # 标准 11 位手机号（1开头）
+      - pattern: '1[3-9]\d{9}'
+        score: 0.85
+        description: "11位手机号"
+
+      # 带 +86 前缀
+      - pattern: '\+86\s*1[3-9]\d{9}'
+        score: 0.90
+        description: "带国际区号的手机号"
+
+      # 带括号和空格的格式
+      - pattern: '\(?\+?86\)?\s*1[3-9]\d{9}'
+        score: 0.85
+        description: "灵活格式手机号"
+
+    context_words:
+      - '手机'
+      - '手机号'
+      - '手机号码'
+      - '电话'
+      - '联系电话'
+      - '联系方式'
+      - '移动电话'
+
+    deny_lists:
+      - '客服'
+      - '热线'
+      - '验证码'
+      - '短信'
+
+  # 中国银行卡识别器
+  - name: ChinaBankCardRecognizer
+    entity_type: CHINA_BANK_CARD
+    confidence_base: 0.85
+    patterns:
+      # 16-19 位银行卡号
+      - pattern: '[1-9]\d{15,18}'
+        score: 0.85
+        description: "标准银行卡号"
+
+      # 带空格分隔的格式
+      - pattern: '[1-9]\d{3}\s?\d{4}\s?\d{4}\s?\d{4,7}'
+        score: 0.90
+        description: "格式化银行卡号"
+
+    context_words:
+      - '银行卡'
+      - '银行卡号'
+      - '卡号'
+      - '账号'
+      - '账户'
+      - '储蓄卡'
+      - '信用卡'
+      - '借记卡'
+
+    deny_lists:
+      - '订单号'
+      - '流水号'
+      - '商品编号'
+
+    validation:
+      type: 'checksum'
+      algorithm: 'luhn'
+
+  # 中国护照号识别器
+  - name: ChinaPassportRecognizer
+    entity_type: CHINA_PASSPORT
+    confidence_base: 0.85
+    patterns:
+      # 新版护照：E + 8位数字
+      - pattern: 'E\d{8}'
+        score: 0.90
+        description: "新版电子护照"
+
+      # 旧版护照：G + 8位数字
+      - pattern: 'G\d{8}'
+        score: 0.90
+        description: "旧版普通护照"
+
+      # 其他类型（P, S, D 开头）
+      - pattern: '[PSD]\d{7}'
+        score: 0.85
+        description: "其他类型护照"
+
+    context_words:
+      - '护照'
+      - '护照号'
+      - '护照号码'
+      - 'passport'
+      - '因私护照'
+      - '因公护照'
+
+    deny_lists:
+      - '订单号'
+      - '编号'

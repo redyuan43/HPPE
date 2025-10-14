@@ -1,0 +1,129 @@
+# LLM 引擎配置文件
+#
+# 用于配置 Qwen 模型和 vLLM 服务
+
+# vLLM 服务配置
+vllm:
+  # 服务地址（本地部署）
+  base_url: "http://localhost:8000/v1"
+
+  # 健康检查地址
+  health_url: "http://localhost:8000/health"
+
+  # 请求超时时间（秒）
+  timeout: 180
+
+  # API Key（本地部署可以使用任意值）
+  api_key: "EMPTY"
+
+# Qwen 模型配置
+model:
+  # 模型名称（HuggingFace 模型 ID 或本地路径）
+  name: "Qwen/Qwen3-8B-AWQ"
+
+  # 模型版本（可选）
+  version: "latest"
+
+  # 是否使用量化模型
+  quantization:
+    enabled: true
+    method: "awq"  # 可选: awq, gptq, none
+    bits: 4
+
+  # GPU 配置
+  gpu:
+    # 使用的 GPU ID（默认使用第一张卡）
+    device_id: 0
+
+    # 张量并行大小（1=单卡，2=双卡并行）
+    tensor_parallel_size: 1
+
+    # GPU 内存利用率（0.0-1.0）
+    memory_utilization: 0.85
+
+  # 序列长度配置
+  max_model_len: 16384
+  max_seq_len: 16384
+
+# 推理参数配置
+inference:
+  # 默认推理参数
+  default:
+    temperature: 0.1  # 温度参数，越低越确定性
+    max_tokens: 512   # 最大生成 token 数
+    top_p: 0.95       # 核采样参数
+    top_k: 50         # Top-K 采样
+    repetition_penalty: 1.0  # 重复惩罚
+
+  # PII 检测专用参数（追求准确性）
+  pii_detection:
+    temperature: 0.05  # 非常低的温度，确保稳定输出
+    max_tokens: 1024   # 较大的 token 限制，支持长文本
+    top_p: 0.9
+    top_k: 40
+
+  # 批处理参数
+  batch:
+    max_batch_size: 16
+    batch_timeout: 5.0  # 批处理超时时间（秒）
+
+# 性能配置
+performance:
+  # 是否启用缓存
+  enable_cache: true
+
+  # 缓存大小（条目数）
+  cache_size: 1000
+
+  # 缓存 TTL（秒）
+  cache_ttl: 3600
+
+  # 并发请求限制
+  max_concurrent_requests: 10
+
+  # 请求队列大小
+  request_queue_size: 100
+
+# 日志配置
+logging:
+  # 日志级别
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+
+  # 是否记录请求详情
+  log_requests: false
+
+  # 是否记录响应详情
+  log_responses: false
+
+  # 日志文件路径（如果为空则只输出到控制台）
+  file_path: null
+
+# 监控配置
+monitoring:
+  # 是否启用 Prometheus 指标
+  enable_metrics: true
+
+  # Prometheus 端口
+  metrics_port: 9090
+
+  # 健康检查间隔（秒）
+  health_check_interval: 30
+
+# 重试配置
+retry:
+  # 最大重试次数
+  max_retries: 3
+
+  # 重试延迟（秒）
+  retry_delay: 1.0
+
+  # 指数退避因子
+  backoff_factor: 2.0
+
+  # 需要重试的 HTTP 状态码
+  retry_status_codes:
+    - 429  # Too Many Requests
+    - 500  # Internal Server Error
+    - 502  # Bad Gateway
+    - 503  # Service Unavailable
+    - 504  # Gateway Timeout

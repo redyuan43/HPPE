@@ -1,0 +1,456 @@
+# PII 检测 Prompt 模板集合
+#
+# 用于 LLM 上下文感知的 PII 检测
+# Story 2.3: 上下文 PII 检测
+#
+# 设计原则:
+# 1. Zero-shot 检测：无需样例即可识别
+# 2. 结构化输出：返回 JSON 格式便于解析
+# 3. 低温度采样：temperature=0.05-0.1 保证一致性
+# 4. 精确定位：返回字符级位置信息
+# 5. 置信度评估：0.0-1.0 置信度分数
+
+---
+
+# ============================================================================
+# 1. 通用 PII 检测 Prompt
+# ============================================================================
+
+general_pii_detection:
+  name: "通用 PII 检测"
+  description: "检测文本中所有类型的个人身份信息"
+  version: "1.0"
+
+  system_prompt: |
+    /no_think
+    你是 PII 检测专家。检测类型：PERSON_NAME、ADDRESS、ORGANIZATION、PHONE_NUMBER、ID_CARD、EMAIL、BANK_CARD、DATE、IP_ADDRESS、OTHER。
+
+    规则：
+    1. 直接输出 JSON，不要思考过程
+    2. 不要使用 <think> 标签
+    3. 立即输出结果
+
+  user_prompt_template: |
+    检测文本中的 PII：{text}
+
+    直接输出 JSON：
+    {{"entities": [{{"type": "...", "value": "...", "start": 0, "end": 0, "confidence": 0.9}}]}}
+
+  parameters:
+    temperature: 0.05
+    max_tokens: 512
+    top_p: 0.9
+    frequency_penalty: 0.0
+    presence_penalty: 0.0
+
+  example_input: |
+    我叫张三，住在北京市海淀区中关村大街1号，手机号是13800138000，邮箱是zhangsan@example.com。
+
+  example_output: |
+    {
+      "entities": [
+        {"type": "PERSON_NAME", "value": "张三", "start": 2, "end": 4, "confidence": 0.95},
+        {"type": "ADDRESS", "value": "北京市海淀区中关村大街1号", "start": 7, "end": 23, "confidence": 0.92},
+        {"type": "PHONE_NUMBER", "value": "13800138000", "start": 29, "end": 40, "confidence": 0.98},
+        {"type": "EMAIL", "value": "zhangsan@example.com", "start": 44, "end": 64, "confidence": 0.99}
+      ]
+    }
+
+# ============================================================================
+# 2. 姓名检测专用 Prompt
+# ============================================================================
+
+person_name_detection:
+  name: "姓名检测"
+  description: "专门检测中英文人名"
+  version: "1.0"
+
+  system_prompt: |
+    /no_think
+    你是姓名识别专家。识别中英文人名（包括完整姓名、姓氏、昵称）。
+
+    规则：
+    1. 直接输出 JSON
+    2. 不要使用 <think> 标签
+    3. 立即输出结果
+
+  user_prompt_template: |
+    识别人名：{text}
+
+    JSON：{{"entities": [{{"type": "PERSON_NAME", "value": "...", "start": 0, "end": 0, "confidence": 0.9}}]}}
+
+  parameters:
+    temperature: 0.05
+    max_tokens: 400
+    top_p: 0.9
+
+  example_input: |
+    张三和李四一起去北京出差，他们在王府井见到了刘总。
+
+  example_output: |
+    {
+      "entities": [
+        {"type": "PERSON_NAME", "value": "张三", "start": 0, "end": 2, "confidence": 0.95},
+        {"type": "PERSON_NAME", "value": "李四", "start": 3, "end": 5, "confidence": 0.95},
+        {"type": "PERSON_NAME", "value": "刘总", "start": 17, "end": 19, "confidence": 0.88}
+      ]
+    }
+
+# ============================================================================
+# 3. 地址检测专用 Prompt
+# ============================================================================
+
+address_detection:
+  name: "地址检测"
+  description: "检测详细地址信息"
+  version: "1.0"
+
+  system_prompt: |
+    /no_think
+    你是地址识别专家。识别完整或部分地址（省市区街道门牌号）。
+
+    规则：
+    1. 直接输出 JSON
+    2. 不要使用 <think> 标签
+    3. 立即输出结果
+
+  user_prompt_template: |
+    识别地址：{text}
+
+    JSON：{{"entities": [{{"type": "ADDRESS", "value": "...", "start": 0, "end": 0, "confidence": 0.9}}]}}
+
+  parameters:
+    temperature: 0.05
+    max_tokens: 600
+    top_p: 0.9
+
+  example_input: |
+    我住在北京市海淀区中关村大街1号院3号楼501室，邮编100080。
+
+  example_output: |
+    {
+      "entities": [
+        {
+          "type": "ADDRESS",
+          "value": "北京市海淀区中关村大街1号院3号楼501室",
+          "start": 3,
+          "end": 26,
+          "confidence": 0.96,
+          "components": {
+            "province": "北京市",
+            "district": "海淀区",
+            "street": "中关村大街",
+            "number": "1号院3号楼501室"
+          }
+        },
+        {
+          "type": "POSTAL_CODE",
+          "value": "100080",
+          "start": 29,
+          "end": 35,
+          "confidence": 0.99
+        }
+      ]
+    }
+
+# ============================================================================
+# 4. 组织机构检测 Prompt
+# ============================================================================
+
+organization_detection:
+  name: "组织机构检测"
+  description: "检测公司、学校、医院等组织机构名称"
+  version: "1.0"
+
+  system_prompt: |
+    /no_think
+    你是组织机构识别专家。识别公司、政府、学校、医院等组织名称。
+
+    规则：
+    1. 直接输出 JSON
+    2. 不要使用 <think> 标签
+    3. 立即输出结果
+
+  user_prompt_template: |
+    识别组织机构：{text}
+
+    JSON：{{"entities": [{{"type": "ORGANIZATION", "value": "...", "start": 0, "end": 0, "confidence": 0.9}}]}}
+
+  parameters:
+    temperature: 0.05
+    max_tokens: 600
+    top_p: 0.9
+
+  example_input: |
+    我在北京科技有限公司工作，之前在清华大学读书，现在在协和医院看病。
+
+  example_output: |
+    {
+      "entities": [
+        {
+          "type": "ORGANIZATION",
+          "value": "北京科技有限公司",
+          "start": 2,
+          "end": 11,
+          "confidence": 0.97,
+          "org_type": "company"
+        },
+        {
+          "type": "ORGANIZATION",
+          "value": "清华大学",
+          "start": 17,
+          "end": 21,
+          "confidence": 0.98,
+          "org_type": "school"
+        },
+        {
+          "type": "ORGANIZATION",
+          "value": "协和医院",
+          "start": 27,
+          "end": 31,
+          "confidence": 0.96,
+          "org_type": "hospital"
+        }
+      ]
+    }
+
+# ============================================================================
+# 5. 多轮对话 PII 检测 Prompt
+# ============================================================================
+
+multi_turn_pii_detection:
+  name: "多轮对话 PII 检测"
+  description: "检测对话历史中累积的 PII 信息"
+  version: "1.0"
+
+  system_prompt: |
+    你是一个专业的对话隐私分析专家。你的任务是分析多轮对话中泄露的个人身份信息。
+
+    分析要点：
+    - 跨轮信息整合：将不同轮次提到的信息关联起来
+    - 隐含信息推断：从对话中推断出的间接 PII
+    - 上下文关联：识别代词、简称指向的实体
+    - 敏感度评估：评估信息组合后的敏感程度
+
+    检测范围：
+    - 所有类型的 PII（姓名、地址、电话、邮箱等）
+    - 关系信息（家庭成员、同事、朋友）
+    - 行为轨迹（地点、时间、活动）
+    - 偏好信息（兴趣、习惯、观点）
+
+    返回 JSON 格式，不要添加任何解释。
+
+  user_prompt_template: |
+    请分析以下对话历史，识别所有泄露的个人身份信息：
+
+    对话历史：
+    {conversation_history}
+
+    返回 JSON 格式：
+    {{
+      "entities": [
+        {{
+          "type": "PII 类型",
+          "value": "值",
+          "source_turn": 轮次编号,
+          "confidence": 置信度,
+          "inferred": 是否推断（true/false）
+        }}
+      ],
+      "relationships": [
+        {{
+          "person1": "人名1",
+          "person2": "人名2",
+          "relation": "关系类型"
+        }}
+      ],
+      "sensitivity_score": 敏感度分数（0.0-1.0）
+    }}
+
+  parameters:
+    temperature: 0.05
+    max_tokens: 3072
+    top_p: 0.9
+
+  example_input: |
+    User: 我想预约明天下午的体检。
+    Assistant: 好的，请问您的姓名和联系方式？
+    User: 我叫张三，手机是13800138000。
+    Assistant: 收到。请问您的出生日期？
+    User: 1990年3月7日。
+    Assistant: 好的，请问您的工作单位？
+    User: 我在北京科技有限公司工作。
+
+  example_output: |
+    {
+      "entities": [
+        {"type": "PERSON_NAME", "value": "张三", "source_turn": 3, "confidence": 0.99, "inferred": false},
+        {"type": "PHONE_NUMBER", "value": "13800138000", "source_turn": 3, "confidence": 0.99, "inferred": false},
+        {"type": "DATE_OF_BIRTH", "value": "1990年3月7日", "source_turn": 5, "confidence": 0.99, "inferred": false},
+        {"type": "ORGANIZATION", "value": "北京科技有限公司", "source_turn": 7, "confidence": 0.97, "inferred": false}
+      ],
+      "relationships": [],
+      "sensitivity_score": 0.85
+    }
+
+# ============================================================================
+# 6. 增强检测 Prompt（结合正则结果）
+# ============================================================================
+
+enhanced_pii_detection:
+  name: "增强 PII 检测"
+  description: "结合正则引擎结果，进行上下文验证和补充检测"
+  version: "1.0"
+
+  system_prompt: |
+    你是一个 PII 检测验证专家。你将收到：
+    1. 原始文本
+    2. 正则引擎检测的 PII 结果
+
+    你的任务：
+    - 验证正则结果的准确性（上下文是否合理）
+    - 检测正则引擎遗漏的 PII（姓名、地址、组织等）
+    - 合并和去重检测结果
+    - 评估每个 PII 的置信度
+
+    判断标准：
+    - 正则结果可能是误检（如：订单号被识别为身份证）
+    - 正则结果可能位置不准确（如：包含了前后文字）
+    - 正则无法检测的 PII（如：自然语言描述的地址）
+
+    返回 JSON 格式，包含验证后的完整结果。
+
+  user_prompt_template: |
+    原始文本：
+    {text}
+
+    正则引擎检测结果：
+    {regex_results}
+
+    请：
+    1. 验证正则结果是否准确（检查上下文）
+    2. 补充检测遗漏的 PII
+    3. 返回完整的 PII 列表
+
+    返回 JSON 格式：
+    {{
+      "entities": [
+        {{
+          "type": "PII 类型",
+          "value": "值",
+          "start": 起始位置,
+          "end": 结束位置,
+          "confidence": 置信度,
+          "source": "detection 来源（regex/llm/both）",
+          "validation": "验证结果（confirmed/rejected/uncertain）"
+        }}
+      ]
+    }}
+
+  parameters:
+    temperature: 0.05
+    max_tokens: 2560
+    top_p: 0.9
+
+  example_input_text: |
+    我叫张三，订单号110101199003077578，手机13800138000，住在北京市海淀区。
+
+  example_input_regex: |
+    [
+      {"type": "CHINA_ID_CARD", "value": "110101199003077578", "start": 7, "end": 25, "confidence": 0.95},
+      {"type": "CHINA_PHONE", "value": "13800138000", "start": 29, "end": 40, "confidence": 0.90}
+    ]
+
+  example_output: |
+    {
+      "entities": [
+        {
+          "type": "PERSON_NAME",
+          "value": "张三",
+          "start": 2,
+          "end": 4,
+          "confidence": 0.95,
+          "source": "llm",
+          "validation": "confirmed"
+        },
+        {
+          "type": "ORDER_NUMBER",
+          "value": "110101199003077578",
+          "start": 7,
+          "end": 25,
+          "confidence": 0.70,
+          "source": "regex",
+          "validation": "rejected",
+          "reason": "上下文表明这是订单号，不是身份证"
+        },
+        {
+          "type": "CHINA_PHONE",
+          "value": "13800138000",
+          "start": 29,
+          "end": 40,
+          "confidence": 0.98,
+          "source": "both",
+          "validation": "confirmed"
+        },
+        {
+          "type": "ADDRESS",
+          "value": "北京市海淀区",
+          "start": 44,
+          "end": 51,
+          "confidence": 0.88,
+          "source": "llm",
+          "validation": "confirmed"
+        }
+      ]
+    }
+
+# ============================================================================
+# 7. PII 脱敏建议 Prompt
+# ============================================================================
+
+pii_redaction_suggestion:
+  name: "PII 脱敏建议"
+  description: "为检测到的 PII 提供脱敏策略建议"
+  version: "1.0"
+
+  system_prompt: |
+    你是一个数据脱敏策略专家。你将收到检测到的 PII 列表，需要为每个 PII 提供合适的脱敏建议。
+
+    脱敏策略：
+    - MASK：部分遮蔽（如：张** ）
+    - REPLACE：替换为占位符（如：[姓名]）
+    - HASH：哈希化（如：abc123...）
+    - SYNTHESIZE：合成替换（如：用假名替换真名）
+    - SUPPRESS：完全删除
+
+    选择原则：
+    - 姓名：MASK 或 SYNTHESIZE（保留姓氏）
+    - 电话：MASK 中间 4 位
+    - 身份证：MASK 中间 10 位
+    - 地址：MASK 门牌号，保留城市/区
+    - 邮箱：MASK 用户名部分
+
+    返回 JSON 格式。
+
+  user_prompt_template: |
+    请为以下 PII 提供脱敏策略建议：
+
+    PII 列表：
+    {pii_entities}
+
+    返回 JSON 格式：
+    {{
+      "redaction_plan": [
+        {{
+          "entity": PII 实体,
+          "strategy": "脱敏策略",
+          "preview": "脱敏后预览",
+          "reason": "选择原因"
+        }}
+      ]
+    }}
+
+  parameters:
+    temperature: 0.1
+    max_tokens: 2048
+    top_p: 0.95

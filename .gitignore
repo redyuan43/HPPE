@@ -1,0 +1,94 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+venv/
+ENV/
+env/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# Logs
+*.log
+logs/
+*.out
+
+# Models and Data
+models/*/
+!models/.gitkeep
+*.pth
+*.pt
+*.bin
+*.safetensors
+*.onnx
+*.h5
+
+# Large datasets
+data/raw/
+data/processed/
+*.jsonl
+*.csv
+*.tsv
+*.arrow
+
+# Temporary files
+tmp/
+temp/
+.temp/
+.tmp/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+Chinese-NLP-Corpus/
+evaluation_results/
+examples/
+vllm_*.log
+qwen3_download.log
+*.coverage
+.bmad-core/
+.spec-workflow/
+.claude/
+
+# DeepSpeed
+deepspeed_config*.json
+
+# Accelerate
+accelerate_config.yaml

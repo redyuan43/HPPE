@@ -1,0 +1,25 @@
+# HPPE 核心依赖
+# Python 3.11+
+
+# 配置解析
+PyYAML>=6.0
+
+# 数据验证
+pydantic>=2.0
+
+# 中文分词（后续 Story 需要）
+# jieba>=0.42
+
+# LLM 推理（后续 Epic 需要）
+# vllm>=0.2.0
+# torch>=2.0
+
+# Web 框架（后续 Epic 需要）
+# fastapi>=0.100.0
+# uvicorn>=0.23.0
+
+# 缓存（后续 Epic 需要）
+# redis>=4.5.0
+
+# 任务队列（后续 Epic 需要）
+# celery>=5.3.0

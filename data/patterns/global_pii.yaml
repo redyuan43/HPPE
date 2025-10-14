@@ -1,0 +1,202 @@
+# 全球通用 PII 识别器配置
+#
+# 本文件定义全球通用和英文 PII 识别器配置
+# 包括：邮箱、IP地址、URL、信用卡、美国SSN等
+
+recognizers:
+  # 电子邮件地址识别器
+  - name: EmailAddressRecognizer
+    entity_type: EMAIL_ADDRESS
+    confidence_base: 0.90
+    patterns:
+      # 标准邮箱格式
+      - pattern: '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}'
+        score: 0.95
+        description: "标准电子邮件格式"
+
+    context_words:
+      - 'email'
+      - 'e-mail'
+      - '邮箱'
+      - '邮件'
+      - '电子邮件'
+      - 'contact'
+      - '联系'
+
+    deny_lists:
+      - 'example.com'
+      - 'test.com'
+      - 'localhost'
+
+  # IPv4 地址识别器
+  - name: IPv4AddressRecognizer
+    entity_type: IP_ADDRESS_V4
+    confidence_base: 0.85
+    patterns:
+      # IPv4 格式
+      - pattern: '(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)'
+        score: 0.90
+        description: "IPv4地址"
+
+    context_words:
+      - 'IP'
+      - 'IP地址'
+      - 'IP address'
+      - '地址'
+      - 'address'
+
+    deny_lists:
+      - '版本'
+      - 'version'
+      - '0.0.0.0'
+      - '127.0.0.1'
+
+  # IPv6 地址识别器
+  - name: IPv6AddressRecognizer
+    entity_type: IP_ADDRESS_V6
+    confidence_base: 0.85
+    patterns:
+      # IPv6 完整格式
+      - pattern: '(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}'
+        score: 0.90
+        description: "IPv6完整格式"
+
+      # IPv6 压缩格式
+      - pattern: '(?:[0-9a-fA-F]{1,4}:){1,7}:|(?:[0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}'
+        score: 0.85
+        description: "IPv6压缩格式"
+
+    context_words:
+      - 'IPv6'
+      - 'IP地址'
+      - 'IP address'
+
+    deny_lists:
+      - '::1'
+      - '::'
+
+  # URL 识别器
+  - name: URLRecognizer
+    entity_type: URL
+    confidence_base: 0.80
+    patterns:
+      # HTTP/HTTPS URL
+      - pattern: 'https?://[a-zA-Z0-9\-._~:/?#\[\]@!$&''()*+,;=%]+'
+        score: 0.90
+        description: "HTTP/HTTPS URL"
+
+      # FTP URL
+      - pattern: 'ftp://[a-zA-Z0-9\-._~:/?#\[\]@!$&''()*+,;=%]+'
+        score: 0.85
+        description: "FTP URL"
+
+    context_words:
+      - 'URL'
+      - '链接'
+      - 'link'
+      - '网址'
+      - 'website'
+
+    deny_lists:
+      - 'example.com'
+      - 'localhost'
+      - '127.0.0.1'
+
+  # 信用卡号识别器
+  - name: CreditCardRecognizer
+    entity_type: CREDIT_CARD
+    confidence_base: 0.85
+    patterns:
+      # Visa (4开头，13或16位)
+      - pattern: '4\d{12}(?:\d{3})?'
+        score: 0.90
+        description: "Visa卡"
+
+      # MasterCard (51-55或2221-2720开头，16位)
+      - pattern: '(?:5[1-5]\d{2}|222[1-9]|22[3-9]\d|2[3-6]\d{2}|27[01]\d|2720)\d{12}'
+        score: 0.90
+        description: "MasterCard"
+
+      # American Express (34或37开头，15位)
+      - pattern: '3[47]\d{13}'
+        score: 0.90
+        description: "American Express"
+
+      # Discover (6011, 622126-622925, 644-649, 65开头，16位)
+      - pattern: '6(?:011|5\d{2})\d{12}'
+        score: 0.90
+        description: "Discover"
+
+      # 带分隔符的格式
+      - pattern: '\d{4}[\s\-]?\d{4}[\s\-]?\d{4}[\s\-]?\d{4}'
+        score: 0.85
+        description: "格式化信用卡号"
+
+    context_words:
+      - 'credit card'
+      - '信用卡'
+      - 'card number'
+      - '卡号'
+      - 'payment'
+      - '支付'
+
+    deny_lists:
+      - 'test'
+      - '测试'
+      - '0000'
+
+    validation:
+      type: 'checksum'
+      algorithm: 'luhn'
+
+  # 美国社会安全号识别器
+  - name: USSocialSecurityRecognizer
+    entity_type: US_SSN
+    confidence_base: 0.85
+    patterns:
+      # 标准格式：XXX-XX-XXXX
+      - pattern: '(?!000|666|9\d{2})\d{3}-(?!00)\d{2}-(?!0000)\d{4}'
+        score: 0.95
+        description: "标准SSN格式"
+
+      # 无分隔符格式
+      - pattern: '(?!000|666|9\d{2})\d{3}(?!00)\d{2}(?!0000)\d{4}'
+        score: 0.85
+        description: "无分隔符SSN"
+
+    context_words:
+      - 'SSN'
+      - 'Social Security'
+      - 'Social Security Number'
+      - '社会安全号'
+
+    deny_lists:
+      - 'test'
+      - 'example'
+
+  # 美国电话号码识别器
+  - name: USPhoneRecognizer
+    entity_type: US_PHONE
+    confidence_base: 0.80
+    patterns:
+      # (XXX) XXX-XXXX 格式
+      - pattern: '\(?\d{3}\)?[\s\-.]?\d{3}[\s\-.]?\d{4}'
+        score: 0.85
+        description: "美国电话号码"
+
+      # +1-XXX-XXX-XXXX 格式
+      - pattern: '\+1[\s\-.]?\(?\d{3}\)?[\s\-.]?\d{3}[\s\-.]?\d{4}'
+        score: 0.90
+        description: "带国际区号的美国电话"
+
+    context_words:
+      - 'phone'
+      - 'telephone'
+      - '电话'
+      - 'tel'
+      - 'contact'
+
+    deny_lists:
+      - 'customer service'
+      - 'hotline'
+      - '客服'

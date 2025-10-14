@@ -1,0 +1,527 @@
+# LLM PII 检测测试数据集
+#
+# 用于测试 LLM 上下文检测能力（Story 2.3）
+# 包含正则引擎无法检测的复杂 PII 场景
+#
+# 数据集分类:
+# 1. 基础场景：单一 PII 类型，上下文明确
+# 2. 复杂场景：多种 PII 混合，上下文模糊
+# 3. 边界场景：容易误判的情况
+# 4. 对抗场景：故意混淆的表述
+
+---
+
+# ============================================================================
+# 1. 姓名检测测试集
+# ============================================================================
+
+person_name_tests:
+  - id: "name_001"
+    text: "我叫张三，是北京科技有限公司的员工。"
+    expected_entities:
+      - type: "PERSON_NAME"
+        value: "张三"
+        start: 2
+        end: 4
+    difficulty: "easy"
+    description: "基础姓名检测"
+
+  - id: "name_002"
+    text: "张三和李四一起去了王府井，遇到了刘总。"
+    expected_entities:
+      - type: "PERSON_NAME"
+        value: "张三"
+        start: 0
+        end: 2
+      - type: "PERSON_NAME"
+        value: "李四"
+        start: 3
+        end: 5
+      - type: "PERSON_NAME"
+        value: "刘总"
+        start: 14
+        end: 16
+    difficulty: "medium"
+    description: "多个姓名检测，包含职位尊称"
+
+  - id: "name_003"
+    text: "小张今天没来，老李说他去医院了。"
+    expected_entities:
+      - type: "PERSON_NAME"
+        value: "小张"
+        start: 0
+        end: 2
+      - type: "PERSON_NAME"
+        value: "老李"
+        start: 7
+        end: 9
+    difficulty: "medium"
+    description: "昵称形式的姓名"
+
+  - id: "name_004"
+    text: "我认识一个叫 John Smith 的美国人。"
+    expected_entities:
+      - type: "PERSON_NAME"
+        value: "John Smith"
+        start: 7
+        end: 17
+    difficulty: "easy"
+    description: "英文姓名检测"
+
+  - id: "name_005"
+    text: "长城很壮观，我们去了故宫和天坛。"
+    expected_entities: []
+    difficulty: "easy"
+    description: "地名不应被识别为姓名"
+
+  - id: "name_006"
+    text: "张三这个名字很常见，李四也是。"
+    expected_entities:
+      - type: "PERSON_NAME"
+        value: "张三"
+        start: 0
+        end: 2
+      - type: "PERSON_NAME"
+        value: "李四"
+        start: 13
+        end: 15
+    difficulty: "medium"
+    description: "在元语言讨论中的姓名"
+
+  - id: "name_007"
+    text: "王经理让张助理联系李秘书。"
+    expected_entities:
+      - type: "PERSON_NAME"
+        value: "王经理"
+        start: 0
+        end: 3
+      - type: "PERSON_NAME"
+        value: "张助理"
+        start: 4
+        end: 7
+      - type: "PERSON_NAME"
+        value: "李秘书"
+        start: 9
+        end: 12
+    difficulty: "hard"
+    description: "职位后缀姓名"
+
+# ============================================================================
+# 2. 地址检测测试集
+# ============================================================================
+
+address_tests:
+  - id: "addr_001"
+    text: "我住在北京市海淀区中关村大街1号。"
+    expected_entities:
+      - type: "ADDRESS"
+        value: "北京市海淀区中关村大街1号"
+        start: 3
+        end: 19
+    difficulty: "easy"
+    description: "标准地址格式"
+
+  - id: "addr_002"
+    text: "他家在上海浦东新区张江高科技园区祖冲之路2277号。"
+    expected_entities:
+      - type: "ADDRESS"
+        value: "上海浦东新区张江高科技园区祖冲之路2277号"
+        start: 3
+        end: 27
+    difficulty: "medium"
+    description: "复杂地址，包含高科技园区"
+
+  - id: "addr_003"
+    text: "公司地址是朝阳区建国路88号SOHO现代城C座1501室。"
+    expected_entities:
+      - type: "ADDRESS"
+        value: "朝阳区建国路88号SOHO现代城C座1501室"
+        start: 5
+        end: 30
+    difficulty: "hard"
+    description: "包含建筑物名称和房间号"
+
+  - id: "addr_004"
+    text: "我在北京工作，喜欢吃北京烤鸭。"
+    expected_entities: []
+    difficulty: "medium"
+    description: "城市名称用于描述，不是地址"
+
+  - id: "addr_005"
+    text: "他住在中关村附近，离清华大学不远。"
+    expected_entities:
+      - type: "ADDRESS"
+        value: "中关村"
+        start: 3
+        end: 6
+    difficulty: "hard"
+    description: "区域性地址，不够具体"
+
+  - id: "addr_006"
+    text: "我的收货地址是广东省广州市天河区天河路123号，邮编510000。"
+    expected_entities:
+      - type: "ADDRESS"
+        value: "广东省广州市天河区天河路123号"
+        start: 7
+        end: 26
+      - type: "POSTAL_CODE"
+        value: "510000"
+        start: 29
+        end: 35
+    difficulty: "medium"
+    description: "地址 + 邮编"
+
+# ============================================================================
+# 3. 组织机构检测测试集
+# ============================================================================
+
+organization_tests:
+  - id: "org_001"
+    text: "我在北京科技有限公司工作。"
+    expected_entities:
+      - type: "ORGANIZATION"
+        value: "北京科技有限公司"
+        start: 2
+        end: 11
+    difficulty: "easy"
+    description: "标准公司名称"
+
+  - id: "org_002"
+    text: "清华大学和北京大学是中国顶尖高校。"
+    expected_entities:
+      - type: "ORGANIZATION"
+        value: "清华大学"
+        start: 0
+        end: 4
+      - type: "ORGANIZATION"
+        value: "北京大学"
+        start: 5
+        end: 9
+    difficulty: "easy"
+    description: "学校名称"
+
+  - id: "org_003"
+    text: "他在国家发展和改革委员会工作。"
+    expected_entities:
+      - type: "ORGANIZATION"
+        value: "国家发展和改革委员会"
+        start: 3
+        end: 14
+    difficulty: "medium"
+    description: "政府部门全称"
+
+  - id: "org_004"
+    text: "协和医院是北京最好的医院之一。"
+    expected_entities:
+      - type: "ORGANIZATION"
+        value: "协和医院"
+        start: 0
+        end: 4
+    difficulty: "easy"
+    description: "医院名称"
+
+  - id: "org_005"
+    text: "中国移动、中国联通和中国电信是三大运营商。"
+    expected_entities:
+      - type: "ORGANIZATION"
+        value: "中国移动"
+        start: 0
+        end: 4
+      - type: "ORGANIZATION"
+        value: "中国联通"
+        start: 6
+        end: 10
+      - type: "ORGANIZATION"
+        value: "中国电信"
+        start: 11
+        end: 15
+    difficulty: "medium"
+    description: "多个企业名称"
+
+  - id: "org_006"
+    text: "北京烤鸭很好吃，我在北京待了三年。"
+    expected_entities: []
+    difficulty: "medium"
+    description: "地名不应被识别为组织"
+
+# ============================================================================
+# 4. 混合场景测试集
+# ============================================================================
+
+mixed_pii_tests:
+  - id: "mix_001"
+    text: "我叫张三，在北京科技有限公司工作，手机号是13800138000，住在北京市海淀区中关村大街1号。"
+    expected_entities:
+      - type: "PERSON_NAME"
+        value: "张三"
+        start: 2
+        end: 4
+      - type: "ORGANIZATION"
+        value: "北京科技有限公司"
+        start: 6
+        end: 15
+      - type: "PHONE_NUMBER"
+        value: "13800138000"
+        start: 22
+        end: 33
+      - type: "ADDRESS"
+        value: "北京市海淀区中关村大街1号"
+        start: 36
+        end: 52
+    difficulty: "medium"
+    description: "多种 PII 类型混合"
+
+  - id: "mix_002"
+    text: "李四是清华大学的教授，他的邮箱是lisi@tsinghua.edu.cn，办公室在FIT楼3-123。"
+    expected_entities:
+      - type: "PERSON_NAME"
+        value: "李四"
+        start: 0
+        end: 2
+      - type: "ORGANIZATION"
+        value: "清华大学"
+        start: 3
+        end: 7
+      - type: "EMAIL"
+        value: "lisi@tsinghua.edu.cn"
+        start: 18
+        end: 38
+      - type: "ADDRESS"
+        value: "FIT楼3-123"
+        start: 43
+        end: 52
+    difficulty: "hard"
+    description: "学术场景的混合 PII"
+
+  - id: "mix_003"
+    text: "王总让张秘书预订明天下午3点在国贸的会议室，参会人员包括李经理和刘助理。"
+    expected_entities:
+      - type: "PERSON_NAME"
+        value: "王总"
+        start: 0
+        end: 2
+      - type: "PERSON_NAME"
+        value: "张秘书"
+        start: 3
+        end: 6
+      - type: "ADDRESS"
+        value: "国贸"
+        start: 17
+        end: 19
+      - type: "PERSON_NAME"
+        value: "李经理"
+        start: 28
+        end: 31
+      - type: "PERSON_NAME"
+        value: "刘助理"
+        start: 32
+        end: 35
+    difficulty: "hard"
+    description: "商务场景，多个职位姓名"
+
+# ============================================================================
+# 5. 上下文推理测试集
+# ============================================================================
+
+context_inference_tests:
+  - id: "ctx_001"
+    text: "我的朋友，一个叫小明的程序员，最近搬到了望京SOHO。"
+    expected_entities:
+      - type: "PERSON_NAME"
+        value: "小明"
+        start: 8
+        end: 10
+      - type: "ADDRESS"
+        value: "望京SOHO"
+        start: 21
+        end: 27
+    difficulty: "medium"
+    description: "间接引用的姓名和地址"
+
+  - id: "ctx_002"
+    text: "他说他明天不来了，让我转告老板。"
+    expected_entities: []
+    difficulty: "hard"
+    description: "代词不应识别为 PII，老板是职位"
+
+  - id: "ctx_003"
+    text: "这是张三的身份证照片，上面显示他住在朝阳区。"
+    expected_entities:
+      - type: "PERSON_NAME"
+        value: "张三"
+        start: 2
+        end: 4
+      - type: "ADDRESS"
+        value: "朝阳区"
+        start: 21
+        end: 24
+    difficulty: "medium"
+    description: "从文档内容推断的 PII"
+
+  - id: "ctx_004"
+    text: "给我发一份他的简历，包括教育背景和工作经历。"
+    expected_entities: []
+    difficulty: "medium"
+    description: "指代不明确，不应识别 PII"
+
+# ============================================================================
+# 6. 多轮对话测试集
+# ============================================================================
+
+multi_turn_conversation_tests:
+  - id: "conv_001"
+    conversation:
+      - turn: 1
+        speaker: "user"
+        text: "我想预约体检。"
+      - turn: 2
+        speaker: "assistant"
+        text: "好的，请问您的姓名？"
+      - turn: 3
+        speaker: "user"
+        text: "张三。"
+      - turn: 4
+        speaker: "assistant"
+        text: "联系电话？"
+      - turn: 5
+        speaker: "user"
+        text: "13800138000。"
+    expected_entities:
+      - type: "PERSON_NAME"
+        value: "张三"
+        source_turn: 3
+      - type: "PHONE_NUMBER"
+        value: "13800138000"
+        source_turn: 5
+    difficulty: "medium"
+    description: "问答式对话中的 PII 收集"
+
+  - id: "conv_002"
+    conversation:
+      - turn: 1
+        speaker: "user"
+        text: "我叫李四，在北京工作。"
+      - turn: 2
+        speaker: "assistant"
+        text: "具体在哪个公司？"
+      - turn: 3
+        speaker: "user"
+        text: "科技公司，中关村那边的。"
+      - turn: 4
+        speaker: "assistant"
+        text: "明白了，公司全称是什么？"
+      - turn: 5
+        speaker: "user"
+        text: "北京某某科技有限公司。"
+    expected_entities:
+      - type: "PERSON_NAME"
+        value: "李四"
+        source_turn: 1
+      - type: "ADDRESS"
+        value: "北京"
+        source_turn: 1
+      - type: "ORGANIZATION"
+        value: "北京某某科技有限公司"
+        source_turn: 5
+      - type: "ADDRESS"
+        value: "中关村"
+        source_turn: 3
+    difficulty: "hard"
+    description: "跨轮次信息整合"
+
+# ============================================================================
+# 7. 边界和对抗样本测试集
+# ============================================================================
+
+edge_case_tests:
+  - id: "edge_001"
+    text: "订单号110101199003077578已发货。"
+    expected_entities:
+      - type: "ORDER_NUMBER"
+        value: "110101199003077578"
+        start: 3
+        end: 21
+    difficulty: "hard"
+    description: "订单号格式类似身份证，需上下文判断"
+
+  - id: "edge_002"
+    text: "我的密码是zhangsan123，请不要告诉别人。"
+    expected_entities: []
+    difficulty: "medium"
+    description: "密码不是 PII，不应检测"
+
+  - id: "edge_003"
+    text: "张三李四王五是中国最常见的姓名。"
+    expected_entities:
+      - type: "PERSON_NAME"
+        value: "张三"
+        start: 0
+        end: 2
+      - type: "PERSON_NAME"
+        value: "李四"
+        start: 2
+        end: 4
+      - type: "PERSON_NAME"
+        value: "王五"
+        start: 4
+        end: 6
+    difficulty: "hard"
+    description: "连续姓名无分隔"
+
+  - id: "edge_004"
+    text: "我不叫张三，也不住在北京。"
+    expected_entities: []
+    difficulty: "hard"
+    description: "否定语境中的信息"
+
+  - id: "edge_005"
+    text: "如果我叫张三，那我就住在北京了。"
+    expected_entities: []
+    difficulty: "hard"
+    description: "假设语境中的信息"
+
+  - id: "edge_006"
+    text: "我曾经的名字是张三，现在改名叫李四了。"
+    expected_entities:
+      - type: "PERSON_NAME"
+        value: "李四"
+        start: 15
+        end: 17
+    difficulty: "hard"
+    description: "过去与现在的信息，只识别当前有效的"
+
+# ============================================================================
+# 8. 性能测试用例（批量）
+# ============================================================================
+
+performance_tests:
+  - id: "perf_001"
+    text: "这是一篇很长的文章，包含很多信息。张三在北京科技有限公司工作，他的同事李四住在朝阳区，王五在海淀区。公司的地址是中关村大街1号，联系电话是010-12345678。这些信息需要被准确检测出来。"
+    expected_entity_count: 8
+    difficulty: "medium"
+    description: "长文本多 PII 检测"
+
+  - id: "perf_002"
+    batch_size: 100
+    description: "批量处理 100 条短文本"
+    difficulty: "medium"
+
+# ============================================================================
+# 测试数据集统计
+# ============================================================================
+
+dataset_stats:
+  total_cases: 35
+  categories:
+    person_name: 7
+    address: 6
+    organization: 6
+    mixed_pii: 3
+    context_inference: 4
+    multi_turn: 2
+    edge_cases: 6
+    performance: 2
+  difficulty_distribution:
+    easy: 10
+    medium: 15
+    hard: 10

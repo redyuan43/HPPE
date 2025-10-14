@@ -1,0 +1,105 @@
+{
+  "builder_name": "json",
+  "citation": "",
+  "config_name": "default",
+  "dataset_name": "pii-masking-200k",
+  "dataset_size": 334130134,
+  "description": "",
+  "download_checksums": {
+    "hf://datasets/ai4privacy/pii-masking-200k@a157bb3aa654864f870dd728fd6d06cc0454fabc/english_pii_43k.jsonl": {
+      "num_bytes": 73805457,
+      "checksum": null
+    },
+    "hf://datasets/ai4privacy/pii-masking-200k@a157bb3aa654864f870dd728fd6d06cc0454fabc/french_pii_62k.jsonl": {
+      "num_bytes": 116470541,
+      "checksum": null
+    },
+    "hf://datasets/ai4privacy/pii-masking-200k@a157bb3aa654864f870dd728fd6d06cc0454fabc/german_pii_52k.jsonl": {
+      "num_bytes": 97800538,
+      "checksum": null
+    },
+    "hf://datasets/ai4privacy/pii-masking-200k@a157bb3aa654864f870dd728fd6d06cc0454fabc/italian_pii_50k.jsonl": {
+      "num_bytes": 93122063,
+      "checksum": null
+    }
+  },
+  "download_size": 381198599,
+  "features": {
+    "source_text": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "target_text": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "privacy_mask": {
+      "feature": {
+        "value": {
+          "dtype": "string",
+          "_type": "Value"
+        },
+        "start": {
+          "dtype": "int64",
+          "_type": "Value"
+        },
+        "end": {
+          "dtype": "int64",
+          "_type": "Value"
+        },
+        "label": {
+          "dtype": "string",
+          "_type": "Value"
+        }
+      },
+      "_type": "List"
+    },
+    "span_labels": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "mbert_text_tokens": {
+      "feature": {
+        "dtype": "string",
+        "_type": "Value"
+      },
+      "_type": "List"
+    },
+    "mbert_bio_labels": {
+      "feature": {
+        "dtype": "string",
+        "_type": "Value"
+      },
+      "_type": "List"
+    },
+    "id": {
+      "dtype": "int64",
+      "_type": "Value"
+    },
+    "language": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "set": {
+      "dtype": "string",
+      "_type": "Value"
+    }
+  },
+  "homepage": "",
+  "license": "",
+  "size_in_bytes": 715328733,
+  "splits": {
+    "train": {
+      "name": "train",
+      "num_bytes": 334130134,
+      "num_examples": 209261,
+      "dataset_name": "pii-masking-200k"
+    }
+  },
+  "version": {
+    "version_str": "0.0.0",
+    "major": 0,
+    "minor": 0,
+    "patch": 0
+  }
+}
