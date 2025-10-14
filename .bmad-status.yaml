@@ -1,0 +1,132 @@
+# BMAD 项目状态 - 自动生成
+# 最后更新: 2025-10-14 17:40
+
+project:
+  name: HPPE
+  version: v0.2.0
+  overall_progress: 40%
+
+current_epic:
+  id: epic-2
+  name: LLM 上下文引擎集成
+  progress: 60%
+  status: in_progress
+
+current_story:
+  id: story-2.2
+  name: Qwen3 模型集成
+  progress: 85%
+  status: in_progress
+  phase: training
+  
+  current_task:
+    name: 模型训练
+    description: Qwen3-0.6B LoRA 微调
+    progress: 85%
+    epoch: 0.28/3.0
+    loss: 0.7577
+    loss_reduction: -55.5%
+    estimated_completion: "2025-10-14 23:00"
+    
+  next_action:
+    when: "今晚 23:00 (训练完成后)"
+    steps:
+      - "运行验证: bash scripts/run_full_validation.sh"
+      - "查看报告: cat evaluation_results/*/validation_report.md"
+      - "如果通过: 标记 Story 2.2 Done, 开始 Story 2.3"
+      - "如果未通过: 继续训练 1-2 epochs"
+
+next_story:
+  id: story-2.3
+  name: 零样本 PII 检测实现
+  status: todo
+  depends_on: story-2.2
+  estimated_start: "2025-10-15"
+  bmad_workflow:
+    - "新开 Chat → @sm → *create"
+    - "审核并批准 Story"
+    - "新开 Chat → @dev → 实现"
+    - "新开 Chat → @qa → 审查"
+    - "验证 → Done"
+
+epics_status:
+  epic-1:
+    name: 核心正则引擎
+    progress: 100%
+    status: completed
+    completion_date: "2025-10-13"
+    
+  epic-2:
+    name: LLM 上下文引擎集成
+    progress: 60%
+    status: in_progress
+    stories:
+      - id: story-2.1
+        name: vLLM 推理服务器部署
+        status: completed
+        progress: 100%
+      - id: story-2.2
+        name: Qwen3 模型集成
+        status: in_progress
+        progress: 85%
+      - id: story-2.3
+        name: 零样本 PII 检测实现
+        status: todo
+        progress: 0%
+      - id: story-2.4
+        name: 提示工程和优化
+        status: todo
+        progress: 0%
+        
+  epic-3:
+    name: 脱敏模块
+    progress: 0%
+    status: planned
+    
+  epic-4:
+    name: API 服务
+    progress: 0%
+    status: planned
+
+key_metrics:
+  epic_1:
+    f2_score: 0.990
+    precision: 0.992
+    recall: 0.989
+    latency_p50: "2.5ms"
+    
+  epic_2_training:
+    loss_initial: 1.7031
+    loss_current: 0.7577
+    loss_reduction: "-55.5%"
+    gradient_norm: "0.44-0.71"
+    training_speed: "3.58s/it"
+    expected_f1: "88-92%"
+    expected_recall: "90-94%"
+
+key_files:
+  progress_tracking:
+    - docs/PROGRESS_CHECKPOINT.md
+    - RESUME_WORK.md
+    - .bmad-status.yaml
+  
+  training:
+    - logs/training_qwen3_06b_single_gpu.log
+    - models/pii_detector_qwen3_06b_single_gpu/
+  
+  validation:
+    - scripts/run_full_validation.sh
+    - scripts/evaluate_trained_model.py
+    - docs/model_validation_plan.md
+  
+  bmad_docs:
+    - docs/prd/epic-2-llm-engine.md
+    - docs/stories/2.2.qwen3-model-download-guide.md
+    - .bmad-core/data/bmad-kb.md
+
+reminders:
+  - "使用 BMAD 方法: 每次切换 Agent 都要新开 Chat"
+  - "一次只做一个 Story"
+  - "完成 Story 前必须通过 QA 审查"
+  - "Story 状态: Draft → Approved → InProgress → Review → Done"
+  - "训练完成后立即运行验证"
