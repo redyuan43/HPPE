@@ -92,3 +92,6 @@ deepspeed_config*.json
 
 # Accelerate
 accelerate_config.yaml
+
+# Unsloth compiled cache
+unsloth_compiled_cache/
