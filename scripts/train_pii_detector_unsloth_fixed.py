@@ -158,6 +158,7 @@ print(f"{'='*70}")
 training_args = TrainingArguments(
     output_dir = OUTPUT_DIR,
     per_device_train_batch_size = PER_DEVICE_TRAIN_BATCH_SIZE,
+    per_device_eval_batch_size = 4,  # 关键修复: 验证时使用更小的batch size
     gradient_accumulation_steps = GRADIENT_ACCUMULATION_STEPS,
     warmup_steps = WARMUP_STEPS,
     num_train_epochs = NUM_TRAIN_EPOCHS,
