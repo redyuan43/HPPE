@@ -6,12 +6,20 @@
 
 from .disambiguator import Disambiguator
 from .merger import EntityMerger
-from .config import DisambiguatorConfig, MergerConfig, RefinementConfig
+from .validator import ContextValidator
+from .config import (
+    DisambiguatorConfig,
+    MergerConfig,
+    ValidatorConfig,
+    RefinementConfig
+)
 
 __all__ = [
     "Disambiguator",
     "EntityMerger",
+    "ContextValidator",
     "DisambiguatorConfig",
     "MergerConfig",
+    "ValidatorConfig",
     "RefinementConfig"
 ]
