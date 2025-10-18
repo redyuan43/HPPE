@@ -1,0 +1,31 @@
+{"text": "我是张三，电话13812345678", "entities": [{"type": "PERSON_NAME", "value": "张三", "start": 2, "end": 4}, {"type": "PHONE_NUMBER", "value": "13812345678", "start": 7, "end": 18}]}
+{"text": "邮箱：zhangsan@example.com，请及时回复", "entities": [{"type": "EMAIL", "value": "zhangsan@example.com", "start": 3, "end": 23}]}
+{"text": "地址：北京市海淀区中关村大街1号", "entities": [{"type": "ADDRESS", "value": "北京市海淀区中关村大街1号", "start": 3, "end": 18}]}
+{"text": "阿里巴巴集团控股有限公司总部位于杭州", "entities": [{"type": "ORGANIZATION", "value": "阿里巴巴集团控股有限公司", "start": 0, "end": 13}]}
+{"text": "身份证号：110101199001011234", "entities": [{"type": "ID_CARD", "value": "110101199001011234", "start": 5, "end": 23}]}
+{"text": "银行卡号：6222021234567890123", "entities": [{"type": "BANK_CARD", "value": "6222021234567890123", "start": 5, "end": 24}]}
+{"text": "车牌号：京A12345，请注意", "entities": [{"type": "LICENSE_PLATE", "value": "京A12345", "start": 4, "end": 11}]}
+{"text": "护照号码：E12345678，请核对", "entities": [{"type": "PASSPORT", "value": "E12345678", "start": 5, "end": 14}]}
+{"text": "社保号：110108199001011234", "entities": [{"type": "SOCIAL_SECURITY", "value": "110108199001011234", "start": 4, "end": 22}]}
+{"text": "军官证号：军字第1234567号", "entities": [{"type": "MILITARY_ID", "value": "军字第1234567号", "start": 5, "end": 17}]}
+{"text": "驾驶证号：110101199001011234", "entities": [{"type": "DRIVERS_LICENSE", "value": "110101199001011234", "start": 5, "end": 23}]}
+{"text": "MAC地址：00:1A:2B:3C:4D:5E", "entities": [{"type": "MAC_ADDRESS", "value": "00:1A:2B:3C:4D:5E", "start": 6, "end": 23}]}
+{"text": "IMEI号：123456789012345，请记录", "entities": [{"type": "IMEI", "value": "123456789012345", "start": 6, "end": 21}]}
+{"text": "IP地址192.168.1.1访问异常", "entities": [{"type": "IP_ADDRESS", "value": "192.168.1.1", "start": 5, "end": 16}]}
+{"text": "VIN码：LGBF53E02CR123456", "entities": [{"type": "VIN", "value": "LGBF53E02CR123456", "start": 5, "end": 22}]}
+{"text": "税号：110101199001011234567", "entities": [{"type": "TAX_ID", "value": "110101199001011234567", "start": 3, "end": 24}]}
+{"text": "邮编：100000，北京市", "entities": [{"type": "POSTAL_CODE", "value": "100000", "start": 3, "end": 9}]}
+{"text": "李四的手机是13900139000", "entities": [{"type": "PERSON_NAME", "value": "李四", "start": 0, "end": 2}, {"type": "PHONE_NUMBER", "value": "13900139000", "start": 7, "end": 18}]}
+{"text": "王五在腾讯科技有限公司工作", "entities": [{"type": "PERSON_NAME", "value": "王五", "start": 0, "end": 2}, {"type": "ORGANIZATION", "value": "腾讯科技有限公司", "start": 3, "end": 12}]}
+{"text": "赵六，邮箱zhaoliu@company.com，地址上海市浦东新区", "entities": [{"type": "PERSON_NAME", "value": "赵六", "start": 0, "end": 2}, {"type": "EMAIL", "value": "zhaoliu@company.com", "start": 6, "end": 25}, {"type": "ADDRESS", "value": "上海市浦东新区", "start": 29, "end": 37}]}
+{"text": "客户信息：孙七，身份证330106199505051234", "entities": [{"type": "PERSON_NAME", "value": "孙七", "start": 5, "end": 7}, {"type": "ID_CARD", "value": "330106199505051234", "start": 12, "end": 30}]}
+{"text": "联系方式：周八先生，电话：010-12345678", "entities": [{"type": "PERSON_NAME", "value": "周八", "start": 5, "end": 7}, {"type": "PHONE_NUMBER", "value": "010-12345678", "start": 15, "end": 27}]}
+{"text": "车辆信息：沪B88888，VIN: LFV3A23K8D3123456", "entities": [{"type": "LICENSE_PLATE", "value": "沪B88888", "start": 5, "end": 12}, {"type": "VIN", "value": "LFV3A23K8D3123456", "start": 19, "end": 36}]}
+{"text": "网络设备MAC: F0:DE:F1:12:34:56, IP: 10.0.0.1", "entities": [{"type": "MAC_ADDRESS", "value": "F0:DE:F1:12:34:56", "start": 10, "end": 27}, {"type": "IP_ADDRESS", "value": "10.0.0.1", "start": 33, "end": 41}]}
+{"text": "手机IMEI：862123456789012，请备案", "entities": [{"type": "IMEI", "value": "862123456789012", "start": 7, "end": 22}]}
+{"text": "公司税号：91110108123456789X，邮编100080", "entities": [{"type": "TAX_ID", "value": "91110108123456789X", "start": 5, "end": 23}, {"type": "POSTAL_CODE", "value": "100080", "start": 27, "end": 33}]}
+{"text": "社保账户：110101198001011234，请确认", "entities": [{"type": "SOCIAL_SECURITY", "value": "110101198001011234", "start": 5, "end": 23}]}
+{"text": "护照E23456789，持有人吴九", "entities": [{"type": "PASSPORT", "value": "E23456789", "start": 2, "end": 11}, {"type": "PERSON_NAME", "value": "吴九", "start": 16, "end": 18}]}
+{"text": "驾照：320105199201011234，A2级", "entities": [{"type": "DRIVERS_LICENSE", "value": "320105199201011234", "start": 3, "end": 21}]}
+{"text": "银行账号：6228480123456789012，户名郑十", "entities": [{"type": "BANK_CARD", "value": "6228480123456789012", "start": 5, "end": 24}, {"type": "PERSON_NAME", "value": "郑十", "start": 28, "end": 30}]}
+{"text": "军官证：军字1234567号，姓名陈十一", "entities": [{"type": "MILITARY_ID", "value": "军字1234567号", "start": 4, "end": 15}, {"type": "PERSON_NAME", "value": "陈十一", "start": 20, "end": 23}]}
